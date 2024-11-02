@@ -1,125 +1,117 @@
 import 'package:flutter/material.dart';
 
-// 날짜별 게시물 페이지 위젯
+// 게시물 클릭 시 동작을 정의하기 위해 콜백 추가
 class DatePostsPage extends StatefulWidget {
+  final Function(Map<String, dynamic>) onPostTap;
+
+  DatePostsPage({required this.onPostTap});
+
   @override
   _DatePostsPageState createState() => _DatePostsPageState();
 }
 
 class _DatePostsPageState extends State<DatePostsPage> {
-  int selectedDateIndex = 3; // 선택된 날짜 인덱스 (기본적으로 28일 선택)
+  int selectedDateIndex = 3; // 기본 선택된 날짜 인덱스 (28일)
   final List<String> dates = ['24', '25', '26', '27', '28', '29', '30'];
   final List<String> days = ['일', '월', '화', '수', '목', '금', '토'];
 
-  final List<Map<String, String>> posts = [
+  final List<Map<String, dynamic>> posts = [
     {
-      'thumbnail': 'assets/thumbnail_placeholder.png', // 썸네일 이미지 경로
+      'thumbnail': 'assets/thumbnail_placeholder.png',
       'title': '가족과 2박 3일 여행',
-      'content': '!지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다. 다음에 또 ..',
+      'content': '지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다.',
       'userImage': 'assets/user_placeholder.png',
-      'userName': '시니어 사용자'
+      'userName': '시니어 사용자',
+      'satisfied': 0,
+      'favorite': 0,
+      'cool': 0,
+      'sad': 0,
     },
     {
       'thumbnail': 'assets/thumbnail_placeholder.png',
       'title': '가족과 2박 3일 여행',
-      'content': '!지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다. 다음에 또 ..',
+      'content': '이번 여행에서 새로운 곳을 많이 구경했다.',
       'userImage': 'assets/user_placeholder.png',
-      'userName': '시니어 사용자'
+      'userName': '시니어 사용자',
+      'satisfied': 0,
+      'favorite': 0,
+      'cool': 0,
+      'sad': 0,
     },
-    {
-      'thumbnail': 'assets/thumbnail_placeholder.png',
-      'title': '가족과 2박 3일 여행',
-      'content': '!지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다. 다음에 또 ..',
-      'userImage': 'assets/user_placeholder.png',
-      'userName': '시니어 사용자'
-    },
-    {
-      'thumbnail': 'assets/thumbnail_placeholder.png',
-      'title': '가족과 2박 3일 여행',
-      'content': '!지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다. 다음에 또 ..',
-      'userImage': 'assets/user_placeholder.png',
-      'userName': '시니어 사용자'
-    },
-    {
-      'thumbnail': 'assets/thumbnail_placeholder.png',
-      'title': '가족과 2박 3일 여행',
-      'content': '!지난 주말에 가족들과 2박 3일 여행을 다녀왔다. 손녀들과 떠나는 첫 여행이라 너무 즐거웠다. 다음에 또 ..',
-      'userImage': 'assets/user_placeholder.png',
-      'userName': '시니어 사용자'
-    },
+    // 추가 게시물 데이터...
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            // 페이지 제목
-            Text(
-              '날짜별 게시물',
-              style: TextStyle(
-                fontSize: 18, // 제목 폰트 크기
-                fontWeight: FontWeight.bold, // 폰트 두께 설정
-              ),
-            ),
-            SizedBox(height: 16), // 제목과 날짜 목록 사이 간격
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          // 페이지 제목
+          Text(
+            '날짜별 게시물',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16), // 제목과 날짜 목록 사이 간격
 
-            // 날짜 선택 버튼 (가로로 화면 전체를 채움)
-            Row(
-              children: List.generate(dates.length, (index) {
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedDateIndex = index; // 선택된 날짜 업데이트
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        // 요일 텍스트 설정 (일요일과 토요일은 회색, 나머지는 검은색)
-                        Text(
-                          days[index],
+          // 날짜 선택 버튼
+          Row(
+            children: List.generate(dates.length, (index) {
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedDateIndex = index; // 선택된 날짜 업데이트
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      // 요일 텍스트 설정 (일요일과 토요일은 회색, 나머지는 검은색)
+                      Text(
+                        days[index],
+                        style: TextStyle(
+                          color: selectedDateIndex == index || (index != 0 && index != 6)
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      // 날짜 텍스트 설정
+                      Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: selectedDateIndex == index ? Colors.red : Colors.transparent,
+                        ),
+                        child: Text(
+                          dates[index],
                           style: TextStyle(
-                            color: selectedDateIndex == index || (index != 0 && index != 6)
-                                ? Colors.black
-                                : Colors.grey,
+                            color: selectedDateIndex == index
+                                ? Colors.white
+                                : (index == 0 || index == 6)
+                                ? Colors.grey
+                                : Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
                         ),
-                        SizedBox(height: 4),
-                        // 날짜 텍스트 설정
-                        Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: selectedDateIndex == index ? Colors.red : Colors.transparent,
-                          ),
-                          child: Text(
-                            dates[index],
-                            style: TextStyle(
-                              color: selectedDateIndex == index
-                                  ? Colors.white
-                                  : (index == 0 || index == 6)
-                                  ? Colors.grey
-                                  : Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-              }),
-            ),
-            SizedBox(height: 16), // 날짜 목록과 게시물 리스트 사이 간격
+                ),
+              );
+            }),
+          ),
+          SizedBox(height: 16), // 날짜 목록과 게시물 리스트 사이 간격
 
-            // 게시물 리스트
-            ...List.generate(posts.length, (index) {
-              final post = posts[index];
-              return Column(
+          // 게시물 리스트
+          ...List.generate(posts.length, (index) {
+            final post = posts[index];
+            return GestureDetector(
+              onTap: () {
+                widget.onPostTap(post); // 게시물 클릭 시 부모로 전달하는 콜백 호출
+              },
+              child: Column(
                 children: [
                   Row(
                     children: [
@@ -129,6 +121,12 @@ class _DatePostsPageState extends State<DatePostsPage> {
                         height: 80,
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
+                          image: post['thumbnail'] != null
+                              ? DecorationImage(
+                            image: AssetImage(post['thumbnail']),
+                            fit: BoxFit.cover,
+                          )
+                              : null,
                         ),
                       ),
                       SizedBox(width: 16), // 썸네일과 텍스트 사이 간격
@@ -139,10 +137,7 @@ class _DatePostsPageState extends State<DatePostsPage> {
                           children: [
                             Text(
                               post['title'] ?? '',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 4),
                             Text(
@@ -156,6 +151,7 @@ class _DatePostsPageState extends State<DatePostsPage> {
                               children: [
                                 CircleAvatar(
                                   radius: 10,
+                                  backgroundImage: AssetImage(post['userImage'] ?? ''),
                                   backgroundColor: Colors.grey[400],
                                 ),
                                 SizedBox(width: 8),
@@ -171,16 +167,13 @@ class _DatePostsPageState extends State<DatePostsPage> {
                     ],
                   ),
                   SizedBox(height: 8),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  Divider(color: Colors.grey, thickness: 1), // 구분선
                   SizedBox(height: 8),
                 ],
-              );
-            }),
-          ],
-        ),
+              ),
+            );
+          }),
+        ],
       ),
     );
   }

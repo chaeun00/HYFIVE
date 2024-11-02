@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'datePostsPage.dart';
 import 'friendPostPage.dart';
 import 'topicPostsPage.dart';
+import 'postDetailPage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,11 +14,21 @@ class _HyFiveHomePageState extends State<Home> {
   int _baseHeight = 893;
 
   int _selectedIndex = 0; // 현재 선택된 정렬 옵션의 인덱스
-  final List<Widget> _pages = [
-    FriendPostsPage(), // 친구별 게시물 페이지
-    DatePostsPage(),   // 날짜별 게시물 페이지
-    TopicPostsPage(),  // 주제별 게시물 페이지
-  ];
+  bool _isDetailPage = false; // 상세 페이지 여부
+  Map<String, dynamic>? _selectedPost; // 선택된 게시물 데이터
+
+  // 페이지 리스트
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      FriendPostsPage(), // 친구별 게시물 페이지
+      DatePostsPage(onPostTap: _onPostTapped), // 날짜별 게시물 페이지
+      TopicPostsPage(), // 주제별 게시물 페이지
+    ];
+  }
 
   // 정렬 버튼 데이터
   final List<Map<String, dynamic>> sortButtonData = [
@@ -37,6 +48,20 @@ class _HyFiveHomePageState extends State<Home> {
   void _onSortButtonTapped(int index) {
     setState(() {
       _selectedIndex = index; // 정렬 버튼 클릭 시 현재 인덱스를 업데이트
+      _isDetailPage = false; // 정렬 버튼을 클릭하면 상세 페이지가 아닌 상태로 변경
+    });
+  }
+
+  void _onPostTapped(Map<String, dynamic> post) {
+    setState(() {
+      _isDetailPage = true; // 상세 페이지로 전환
+      _selectedPost = post; // 선택된 게시물 데이터 저장
+    });
+  }
+
+  void _goBackToMainPage() {
+    setState(() {
+      _isDetailPage = false; // 메인 페이지로 돌아가기
     });
   }
 
@@ -57,39 +82,72 @@ class _HyFiveHomePageState extends State<Home> {
           ),
           child: AppBar(
             title: Text(
-              'HYFIVE',
+              'HYFIVE', // 항상 동일한 앱바 제목 유지
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            leading: null,
             centerTitle: false,
             backgroundColor: Colors.white, // AppBar의 배경색 설정
             elevation: 0.0, // 기본 elevation을 제거
           ),
         ),
       ),
-
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height * (1000 / _baseHeight),
-        child: Column(
-          children: [
-            // '정렬' 제목 추가
+      body: Column(
+        children: [
+          if (_isDetailPage) ...[
+            // 홈으로 이동 버튼 (상세 페이지에서만 보임) - 아이콘과 텍스트 간격을 수동으로 줄임
             Padding(
-                padding: const EdgeInsets.only(top: 12, left: 12),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '정렬',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold
-                    ),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: TextButton(
+                  onPressed: _goBackToMainPage, // 버튼 클릭 시 메인 페이지로 이동
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero, // 버튼 패딩을 0으로 설정하여 왼쪽에 딱 붙도록 함
+                    alignment: Alignment.centerLeft, // 텍스트 버튼 내부의 정렬 왼쪽으로 설정
+                    splashFactory: NoSplash.splashFactory, // 클릭 시 스플래시 효과 제거
+                    overlayColor: Colors.transparent, // 클릭 시 오버레이 컬러를 투명으로 설정
                   ),
-                )
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.chevron_left,
+                        color: Colors.black54,
+                        size: 30, // 아이콘 크기 설정
+                      ),
+                      Text(
+                        '홈으로 이동',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16, // 폰트 크기 설정
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
-
-            // 정렬 버튼
+          ],
+          if (!_isDetailPage) ...[
+            // 정렬 버튼 섹션
+            Padding(
+              padding: const EdgeInsets.only(top: 12, left: 12),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '정렬',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Row(
@@ -111,18 +169,20 @@ class _HyFiveHomePageState extends State<Home> {
                 }).toList(),
               ),
             ),
-
-            // 콘텐츠 영역
-            Expanded(
-              child: _pages[_selectedIndex], // 현재 선택된 페이지를 표시
-            ),
           ],
-        ),
+          // 콘텐츠 섹션
+          Expanded(
+            child: _isDetailPage
+                ? PostDetailPage(
+              post: _selectedPost!,
+              onGoBack: _goBackToMainPage,
+            )
+                : _pages[_selectedIndex],
+          ),
+        ],
       ),
-
-      // 바텀 앱 바
       bottomNavigationBar: SizedBox(
-        height: MediaQuery.of(context).size.height * (120 / _baseHeight),
+        height: MediaQuery.of(context).size.height * (110 / _baseHeight),
         child: BottomAppBar(
           color: Colors.white,
           child: Row(

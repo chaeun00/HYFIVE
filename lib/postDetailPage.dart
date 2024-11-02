@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class PostDetailPage extends StatefulWidget {
   final Map<String, dynamic> post;
   final VoidCallback onGoBack;
+  final VoidCallback goToCommentPage;
 
-  PostDetailPage({required this.post, required this.onGoBack});
+  PostDetailPage({required this.post, required this.onGoBack, required this.goToCommentPage});
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
@@ -207,106 +208,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.post['satisfied']++;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200], // 원형 배경색 설정
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.sentiment_satisfied_alt, size: 30),
-                          ),
-                          SizedBox(height: 8), // 아이콘과 숫자 사이의 간격
-                          Text(
-                            widget.post['satisfied'].toString().padLeft(2, '0'), // 두 자리로 표시
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.post['favorite']++;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200], // 원형 배경색 설정
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.favorite, size: 30),
-                          ),
-                          SizedBox(height: 8), // 아이콘과 숫자 사이의 간격
-                          Text(
-                            widget.post['favorite'].toString().padLeft(2, '0'), // 두 자리로 표시
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.post['cool']++;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200], // 원형 배경색 설정
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.sentiment_very_satisfied, size: 30),
-                          ),
-                          SizedBox(height: 8), // 아이콘과 숫자 사이의 간격
-                          Text(
-                            widget.post['cool'].toString().padLeft(2, '0'), // 두 자리로 표시
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.post['sad']++;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200], // 원형 배경색 설정
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(Icons.sentiment_dissatisfied, size: 30),
-                          ),
-                          SizedBox(height: 8), // 아이콘과 숫자 사이의 간격
-                          Text(
-                            widget.post['sad'].toString().padLeft(2, '0'), // 두 자리로 표시
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _emotionButton('satisfied', Icons.sentiment_satisfied_alt),
+                    _emotionButton('favorite', Icons.favorite),
+                    _emotionButton('cool', Icons.sentiment_very_satisfied),
+                    _emotionButton('sad', Icons.sentiment_dissatisfied),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -317,7 +222,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     width: double.infinity, // 버튼을 가로로 화면 전체 길이로 설정
                     height: 42,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: widget.goToCommentPage, // 댓글 페이지로 전환하는 콜백 호출
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white, // 버튼 배경색을 흰색으로 설정
                         side: BorderSide(color: Colors.black, width: 1.0), // 테두리 색상과 두께 설정
@@ -341,6 +246,34 @@ class _PostDetailPageState extends State<PostDetailPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _emotionButton(String emotionKey, IconData icon) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.post[emotionKey]++;
+        });
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // 원형 배경색 설정
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 30),
+          ),
+          SizedBox(height: 8), // 아이콘과 숫자 사이의 간격
+          Text(
+            widget.post[emotionKey].toString().padLeft(2, '0'), // 두 자리로 표시
+            style: TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
     );
   }
 }

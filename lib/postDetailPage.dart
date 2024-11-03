@@ -187,11 +187,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 color: Colors.grey[200], // 태그 배경색 설정
                                 borderRadius: BorderRadius.circular(3), // 태그의 모서리를 둥글게 설정
                               ),
-                              child: Text(
-                                tag, // 태그 텍스트
-                                style: TextStyle(
-                                  fontSize: 10, // 텍스트 크기를 줄임
-                                  color: Colors.black87, // 텍스트 색상 설정
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 3),
+                                child: Text(
+                                  tag, // 태그 텍스트
+                                  style: TextStyle(
+                                    fontSize: 10, // 텍스트 크기를 줄임
+                                    color: Colors.black87, // 텍스트 색상 설정
+                                  ),
                                 ),
                               ),
                             );

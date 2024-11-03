@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'createPostPage.dart';
 
 class CreatePage extends StatelessWidget {
   @override
@@ -10,7 +11,7 @@ class CreatePage extends StatelessWidget {
           children: [
             // '홈으로 이동' 버튼
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
               child: Container(
                 color: Colors.white,
                 child: TextButton(
@@ -106,6 +107,10 @@ class CreatePage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // 만들기 버튼 클릭 시 처리할 내용
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CreatePostPage()), // '만들기' 페이지로 이동
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFBB2F30), // 짙은 빨강 색상

@@ -4,6 +4,7 @@ import 'friendPostPage.dart';
 import 'topicPostsPage.dart';
 import 'postDetailPage.dart';
 import 'commentPage.dart';
+import 'createPage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -76,6 +77,13 @@ class _HyFiveHomePageState extends State<Home> {
     });
   }
 
+  void _onCreateButtonPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreatePage()), // '만들기' 페이지로 이동
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +103,7 @@ class _HyFiveHomePageState extends State<Home> {
             title: Text(
               'HYFIVE', // 항상 동일한 앱바 제목 유지
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -166,13 +174,14 @@ class _HyFiveHomePageState extends State<Home> {
                       Icon(
                         Icons.chevron_left,
                         color: Colors.black54,
-                        size: 30, // 아이콘 크기 설정
+                        size: 35, // 아이콘 크기 설정
                       ),
+                      SizedBox(width: 4,),
                       Text(
                         '홈으로 이동',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16, // 폰트 크기 설정
+                          fontSize: 18, // 폰트 크기 설정
                         ),
                       ),
                     ],
@@ -206,13 +215,14 @@ class _HyFiveHomePageState extends State<Home> {
                       Icon(
                         Icons.chevron_left,
                         color: Colors.black54,
-                        size: 30, // 아이콘 크기 설정
+                        size: 35, // 아이콘 크기 설정
                       ),
+                      SizedBox(width: 4,),
                       Text(
                         '뒤로 가기',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16, // 폰트 크기 설정
+                          fontSize: 18, // 폰트 크기 설정
                         ),
                       ),
                     ],
@@ -255,7 +265,13 @@ class _HyFiveHomePageState extends State<Home> {
                 width: MediaQuery.of(context).size.width * (91 / _baseWidth),
                 height: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (data['label'] == '만들기') {
+                      _onCreateButtonPressed(); // '만들기' 버튼 클릭 시 'CreatePage'로 이동
+                    } else {
+                      // 다른 버튼 클릭 시 처리
+                    }
+                  },
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

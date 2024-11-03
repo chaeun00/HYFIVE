@@ -81,7 +81,7 @@ class _DatePostsPageState extends State<DatePostsPage> {
                         padding: EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: selectedDateIndex == index ? Colors.red : Colors.transparent,
+                          color: selectedDateIndex == index ? Color(0xFFBB2F30) : Colors.transparent,
                         ),
                         child: Text(
                           dates[index],
